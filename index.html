@@ -69,30 +69,42 @@
     </form>
 
     <section id="error-btns">
-      <button>Console Log</button>
-      <button>Console Error</button>
-      <button>Console Count</button>
-      <button>Console Warn</button>
-      <button>Console Assert</button>
-      <button>Console Clear</button>
-      <button>Console Dir</button>
-      <button>Console dirxml</button>
-      <button>Console Group Start</button>
-      <button>Console Group End</button>
-      <button>Console Table</button>
-      <button>Start Timer</button>
-      <button>End Timer</button>
-      <button>Console Trace</button>
-      <button>Trigger a Global Error</button>
+      <button id="log">Console Log</button>
+      <button id="error">Console Error</button>
+      <button id="count">Console Count</button>
+      <button id="warn">Console Warn</button>
+      <button id="assert">Console Assert</button>
+      <button id="clear">Console Clear</button>
+      <button id="dir">Console Dir</button>
+      <button id="dirxml">Console dirxml</button>
+      <button id="groupStart">Console Group Start</button>
+      <button id="groupEnd">Console Group End</button>
+      <button id="table">Console Table</button>
+      <button id="startTimer">Start Timer</button>
+      <button id="endTimer">End Timer</button>
+      <button id="trace">Console Trace</button>
+      <button id="globalError">Trigger a Global Error</button>
     </section>
   </main>
 
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+  <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "503f4e045010451a9316dd29abc43b10"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+  </script>
+                          
   <script>
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
       e.preventDefault();
       let output = document.querySelector('output');
       let firstNum = document.querySelector('#first-num').value;
+      // Step 4: Throwing a custom error
+      if (!Number.isFinite(firstNum)) {
+        throw new NotANumError("Your first input was not a number!");
+      }
       let secondNum = document.querySelector('#second-num').value;
       let operator = document.querySelector('#operator').value;
       output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
@@ -102,6 +114,109 @@
 
     // Start your code here
     // You may move this JS to another file if you wish
+
+    // Step 2
+    let consLog = document.getElementById('log');
+    consLog.addEventListener("click", () => {
+      console.log("Console Log Test");
+    });
+
+    let consError = document.getElementById('error');
+    consError.addEventListener("click", () => {
+      console.error("Console Error Test");
+    });
+
+    let consCount = document.getElementById('count');
+    consCount.addEventListener("click", () => {
+      console.count("Number of times Console Count Has Been Pressed: ");
+    });
+
+    let consWarn = document.getElementById('warn');
+    consWarn.addEventListener("click", () => {
+      console.warn("Console Warn Test");
+    });
+
+    let consAssert = document.getElementById('assert');
+    consAssert.addEventListener("click", () => {
+      console.assert(1 == 2, "Console Assert Test; 1 is not equal to 2");
+    });
+
+    let consClear = document.getElementById('clear');
+    consClear.addEventListener("click", () => {
+      console.clear();
+    });
+
+    let consDir = document.getElementById('dir');
+    consDir.addEventListener("click", () => {
+      console.dir({message: "Console Dir Test"});
+    });
+
+    let consDirxml = document.getElementById('dirxml');
+    consDirxml.addEventListener("click", () => {
+      console.dirxml(consDirxml);
+    });
+
+    let consGroupStart = document.getElementById('groupStart');
+    consGroupStart.addEventListener("click", () => {
+      console.group("Console Group Start Test");
+    });
+
+    let consGroupEnd = document.getElementById('groupEnd');
+    consGroupEnd.addEventListener("click", () => {
+      console.groupEnd();
+    });
+
+    let consTable = document.getElementById('table');
+    consTable.addEventListener("click", () => {
+      console.table(["Console", "Table", "Test"]);
+    });
+
+    let consStartTimer = document.getElementById('startTimer');
+    consStartTimer.addEventListener("click", () => {
+      console.time();
+    });
+
+    let consEndTimer = document.getElementById('endTimer');
+    consEndTimer.addEventListener("click", () => {
+      console.timeEnd();
+    })
+
+    let consTrace = document.getElementById('trace');
+    function consoleTraceTest() {
+      console.trace();
+    }
+    consTrace.addEventListener("click", () => {
+      consoleTraceTest();
+    });
+
+    // Step 3
+    let trigError = document.getElementById('globalError');
+    trigError.addEventListener("click", () => {
+      try {
+        let one = 1;
+        let two = 2;
+        one + two;
+        console.log(three);
+      } catch (err) {
+        console.log("Caught an error!");
+        throw err;
+      } finally {
+        console.log(`three should be equal to 3`);
+      }
+    });
+
+    // Step 4: Creating a Custom Error
+    class NotANumError extends SyntaxError {
+      constructor(message) {
+        super(message);
+        this.name = "NotANumError";
+      }
+    }
+    
+    // Step 5
+    window.onerror = function(message, source, lineno, colno, error) {
+      console.log(`window.onerror report:\n ${message}\n ${source}\n ${lineno}\n ${colno}\n ${error}`);
+    };
   </script>
 </body>
 
